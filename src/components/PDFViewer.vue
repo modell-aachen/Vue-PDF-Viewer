@@ -6,6 +6,8 @@
 import * as pdf from "pdfjs-dist/legacy/build/pdf.js";
 import PdfWorker from "pdfjs-dist/legacy/build/pdf.worker.js";
 
+pdf.GlobalWorkerOptions.workerPort = new PdfWorker();
+
 export default {
   props: {
     url: {
@@ -17,9 +19,6 @@ export default {
     return {
       document: null,
     };
-  },
-  mounted() {
-    pdf.GlobalWorkerOptions.workerPort = new PdfWorker();
   },
   async created() {
     await this.loadDocument();
