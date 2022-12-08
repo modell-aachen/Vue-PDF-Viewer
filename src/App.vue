@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      url:"http://127.0.0.1:9000/my-pdf-file.pdf"
+      url:"http://127.0.0.1:9000/sample.pdf"
     }
   },
 }

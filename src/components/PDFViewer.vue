@@ -1,6 +1,6 @@
 <template>
   <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
-    <div ref="viewer" id="viewer" class="viewer"></div>
+    <div ref="viewer" id="viewer" class="pdfViewer"></div>
   </div>
 </template>
 
@@ -23,6 +23,7 @@ export default {
     return {
       document: null,
       pdfViewer: null,
+      eventBus: null,
     };
   },
   async mounted() {
@@ -72,6 +73,7 @@ export default {
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
+      this.eventBus = eventBus;
     },
   },
 };
