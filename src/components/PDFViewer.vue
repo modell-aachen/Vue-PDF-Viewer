@@ -5,6 +5,11 @@
         <button @click=rotation(-90) class="rotate-left">rotate left</button>
         <button @click=rotation(90) class="rotate-right">rotate right</button>
       </div>
+      <div id="zoom" class="zoom">
+        <button @click=zoom(1) class="zoom-in">+</button>
+        <label for="zoom-factor">100%</label>
+        <button @click=zoom(-1) class="zoom-out">-</button>
+      </div>
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
@@ -104,14 +109,21 @@ export default {
 
 .toolbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-content: center;
   margin: 4px;
   position: relative;
-  left: 50%;
+  /*left: 50%;*/
+  gap: 1.2rem;
 }
 
 .rotation{
+  display: flex;
+  gap: 1.2rem;
+  align-content: center;
+}
+
+.zoom{
   display: flex;
   gap: 1.2rem;
   align-content: center;
