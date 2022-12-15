@@ -1,6 +1,19 @@
 <template>
-  <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
-    <div ref="viewer" id="viewer" class="pdfViewer"></div>
+  <div class="container">
+    <div class="toolbar">
+      <div class="search">
+        <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
+        <div v-if="isOpenSearchbar" class="searchBar">
+          <input v-model="searchWord" type="text" placeholder="Suche..." />
+          <button @click="search">Suche</button>
+          <button @click="prev">Prev</button>
+          <button @click="next">Next</button>
+        </div>
+      </div>
+    </div>
+    <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
+      <div ref="viewer" id="viewer" class="pdfViewer"></div>
+    </div>
   </div>
 </template>
 
@@ -24,6 +37,7 @@ export default {
       document: null,
       pdfViewer: null,
       eventBus: null,
+      isOpenSearchbar: false,
     };
   },
   async mounted() {
@@ -74,6 +88,31 @@ export default {
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
       this.eventBus = eventBus;
+      window.addEventListener("resize", () => {
+        this.pdfViewer.currentScaleValue = "page-width";
+      });
+    },
+    search() {
+      this.eventBus.dispatch("find", {
+        type: "",
+        query: this.searchWord,
+        highlightAll: true,
+      });
+    },
+    next() {
+      this.eventBus.dispatch("find", {
+        type: "again",
+        query: this.searchWord,
+        highlightAll: true,
+      });
+    },
+    prev() {
+      this.eventBus.dispatch("find", {
+        type: "again",
+        query: this.searchWord,
+        highlightAll: true,
+        findPrevious: true,
+      });
     },
   },
 };
@@ -81,10 +120,58 @@ export default {
 
 <style scoped>
 @import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
+
+button {
+  margin: 0;
+}
+.container {
+  padding: 30px;
+  position: relative;
+  height: 100%;
+  display: grid;
+  justify-items: center;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  border-radius: 2px;
+  background: rgb(191, 190, 190);
+  border-width: 2px;
+  border-color: gray;
+  width: 100%;
+  height: fit-content;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+}
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBar {
+  z-index: 10000;
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  padding: 6px;
+
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  border-radius: 5px;
+  background-color: grey;
+}
 .viewerContainer {
   overflow: auto;
   position: absolute;
-  width: 100%;
+  width: 90%;
+  top: 50px;
   height: 100%;
 }
 </style>
