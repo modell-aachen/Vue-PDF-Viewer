@@ -6,9 +6,9 @@
         <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
       </div>
       <div id="zoom" class="zoom">
-        <button @click=zoom(1) class="zoom-in">+</button>
-        <label for="zoom-factor">100%</label>
         <button @click=zoom(-1) class="zoom-out">-</button>
+        <label for="zoom-factor">100%</label>
+        <button @click=zoom(1) class="zoom-in">+</button>
       </div>
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
@@ -113,13 +113,12 @@ export default {
   align-content: center;
   margin: 4px;
   position: relative;
-  background-color: grey;
+  background-color: #2c3e50;
   gap: 1.2rem;
 }
 
 .rotation{
   justify-content: center;
-  background-color: #2c3e50;
   gap: 1.2rem;
 }
 
