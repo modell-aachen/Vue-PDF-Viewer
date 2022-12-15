@@ -1,6 +1,14 @@
 <template>
-  <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
-    <div ref="viewer" id="viewer" class="pdfViewer"></div>
+  <div>
+    <div class = "toolbar">
+      <div id="rotation" class="rotation">
+        <button @click=rotation(-90) class="rotate-left">rotate left</button>
+        <button @click=rotation(90) class="rotate-right">rotate right</button>
+      </div>
+    </div>
+    <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
+      <div ref="viewer" id="viewer" class="pdfViewer"></div>
+    </div>
   </div>
 </template>
 
@@ -21,6 +29,7 @@ export default {
   },
   data() {
     return {
+      currentRotation: 0,
       document: null,
       pdfViewer: null,
       eventBus: null,
@@ -31,6 +40,17 @@ export default {
     this.renderPDF();
   },
   methods: {
+    rotation(degree) {
+      this.currentRotation += degree;
+      const FULL_ROTATION = 360;
+      if (this.currentRotation >= FULL_ROTATION){
+        this.currentRotation -= FULL_ROTATION;
+      }
+      if (this.currentRotation < 0){
+        this.currentRotation += FULL_ROTATION;
+      }
+      this.pdfViewer.pagesRotation = this.currentRotation;
+    },
     async loadDocument() {
       try {
         this.document = await pdf.getDocument({
@@ -81,6 +101,34 @@ export default {
 
 <style scoped>
 @import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin: 4px;
+  position: relative;
+  left: 50%;
+}
+
+.rotation{
+  display: flex;
+  gap: 1.2rem;
+  align-content: center;
+}
+
+.rotate-left{
+  margin: 0;
+  position: relative;
+  align-content: center;
+}
+
+.rotate-right {
+  margin: 0;
+  position: relative;
+
+}
+
 .viewerContainer {
   overflow: auto;
   position: absolute;
