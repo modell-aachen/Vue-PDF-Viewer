@@ -1,10 +1,8 @@
 <template>
   <div>
-    <div class = "toolbar">
-      <div id="rotation" class="rotation">
+    <div class = "toolbar rotation">
         <button @click=rotation(-90) class="rotate-left">rotate left</button>
-        <button @click=rotation(90) class="rotate-right">rotate right</button>
-      </div>
+        <button @click=rotation(90) class="">rotate right</button>
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
@@ -108,25 +106,15 @@ export default {
   align-content: center;
   margin: 4px;
   position: relative;
-  left: 50%;
+  text-align: center;
 }
 
 .rotation{
-  display: flex;
-  gap: 1.2rem;
-  align-content: center;
+  justify-content: center;
 }
 
 .rotate-left{
-  margin: 0;
-  position: relative;
-  align-content: center;
-}
-
-.rotate-right {
-  margin: 0;
-  position: relative;
-
+  margin-right: 20px;
 }
 
 .viewerContainer {
