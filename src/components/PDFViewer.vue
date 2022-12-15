@@ -83,13 +83,25 @@ export default {
       pdfLinkService.setViewer(this.pdfViewer);
       pdfScriptingManager.setViewer(this.pdfViewer);
       eventBus.on("pagesinit", () => {
-        this.pdfViewer.currentScaleValue = "page-width";
+        this.pdfViewer.currentScaleValue = "page-fit";
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
       this.eventBus = eventBus;
+      this.eventBus.on("resize", () => {
+        const currentScaleValue = this.pdfViewer.currentScaleValue;
+        if (
+          currentScaleValue === "auto" ||
+          currentScaleValue === "page-fit" ||
+          currentScaleValue === "page-width"
+        ) {
+          // Note: the scale is constant for 'page-actual'.
+          this.pdfViewer.currentScaleValue = currentScaleValue;
+        }
+        this.pdfViewer.update();
+      });
       window.addEventListener("resize", () => {
-        this.pdfViewer.currentScaleValue = "page-width";
+        this.eventBus.dispatch("resize", { source: window });
       });
     },
     search() {
