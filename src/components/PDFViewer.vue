@@ -2,8 +2,8 @@
   <div>
     <div class = "toolbar">
       <div id="rotation" class="rotation">
-        <button @click=rotation(-90) class="rotate-left">rotate left</button>
-        <button @click=rotation(90) class="rotate-right">rotate right</button>
+        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
+        <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
       </div>
       <div id="zoom" class="zoom">
         <button @click=zoom(1) class="zoom-in">+</button>
@@ -113,14 +113,14 @@ export default {
   align-content: center;
   margin: 4px;
   position: relative;
-  /*left: 50%;*/
+  background-color: grey;
   gap: 1.2rem;
 }
 
 .rotation{
-  display: flex;
+  justify-content: center;
+  background-color: #2c3e50;
   gap: 1.2rem;
-  align-content: center;
 }
 
 .zoom{
@@ -130,9 +130,7 @@ export default {
 }
 
 .rotate-left{
-  margin: 0;
-  position: relative;
-  align-content: center;
+  margin-right: 20px;
 }
 
 .rotate-right {
