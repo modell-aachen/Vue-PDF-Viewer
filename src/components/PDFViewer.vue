@@ -1,8 +1,22 @@
 <template>
+<<<<<<< HEAD
   <div>
     <div class = "toolbar rotation">
         <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
         <button @click=rotation(90) class=""><img src="../assets/icons/rotationRight.svg"></button>
+=======
+  <div class="container">
+    <div class="toolbar">
+      <div class="search">
+        <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
+        <div v-if="isOpenSearchbar" class="searchBar">
+          <input v-model="searchWord" type="text" placeholder="Suche..." />
+          <button @click="search">Suche</button>
+          <button @click="prev">Prev</button>
+          <button @click="next">Next</button>
+        </div>
+      </div>
+>>>>>>> textSearching
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
@@ -31,6 +45,7 @@ export default {
       document: null,
       pdfViewer: null,
       eventBus: null,
+      isOpenSearchbar: false,
     };
   },
   async mounted() {
@@ -87,11 +102,48 @@ export default {
       pdfLinkService.setViewer(this.pdfViewer);
       pdfScriptingManager.setViewer(this.pdfViewer);
       eventBus.on("pagesinit", () => {
-        this.pdfViewer.currentScaleValue = "page-width";
+        this.pdfViewer.currentScaleValue = "page-fit";
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
       this.eventBus = eventBus;
+      this.eventBus.on("resize", () => {
+        const currentScaleValue = this.pdfViewer.currentScaleValue;
+        if (
+          currentScaleValue === "auto" ||
+          currentScaleValue === "page-fit" ||
+          currentScaleValue === "page-width"
+        ) {
+          // Note: the scale is constant for 'page-actual'.
+          this.pdfViewer.currentScaleValue = currentScaleValue;
+        }
+        this.pdfViewer.update();
+      });
+      window.addEventListener("resize", () => {
+        this.eventBus.dispatch("resize", { source: window });
+      });
+    },
+    search() {
+      this.eventBus.dispatch("find", {
+        type: "",
+        query: this.searchWord,
+        highlightAll: true,
+      });
+    },
+    next() {
+      this.eventBus.dispatch("find", {
+        type: "again",
+        query: this.searchWord,
+        highlightAll: true,
+      });
+    },
+    prev() {
+      this.eventBus.dispatch("find", {
+        type: "again",
+        query: this.searchWord,
+        highlightAll: true,
+        findPrevious: true,
+      });
     },
   },
 };
@@ -100,6 +152,7 @@ export default {
 <style scoped>
 @import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
 
+<<<<<<< HEAD
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -119,10 +172,59 @@ export default {
   margin-right: 20px;
 }
 
+=======
+button {
+  margin: 0;
+}
+.container {
+  padding: 30px;
+  position: relative;
+  height: 100%;
+  display: grid;
+  justify-items: center;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  border-radius: 2px;
+  background: rgb(191, 190, 190);
+  border-width: 2px;
+  border-color: gray;
+  width: 100%;
+  height: fit-content;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+}
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBar {
+  z-index: 10000;
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  padding: 6px;
+
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  border-radius: 5px;
+  background-color: grey;
+}
+>>>>>>> textSearching
 .viewerContainer {
   overflow: auto;
   position: absolute;
-  width: 100%;
+  width: 90%;
+  top: 50px;
   height: 100%;
 }
 </style>
