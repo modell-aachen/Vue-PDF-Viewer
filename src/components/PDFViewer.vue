@@ -1,22 +1,22 @@
 <template>
-<<<<<<< HEAD
   <div>
-    <div class = "toolbar rotation">
-        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
-        <button @click=rotation(90) class=""><img src="../assets/icons/rotationRight.svg"></button>
-=======
-  <div class="container">
-    <div class="toolbar">
-      <div class="search">
-        <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
-        <div v-if="isOpenSearchbar" class="searchBar">
-          <input v-model="searchWord" type="text" placeholder="Suche..." />
-          <button @click="search">Suche</button>
-          <button @click="prev">Prev</button>
-          <button @click="next">Next</button>
+    <div class="container">
+      <div class = "toolbar">
+        <div class="search">
+          <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
+          <div v-if="isOpenSearchbar" class="searchBar">
+            <input v-model="searchWord" type="text" placeholder="Suche..." />
+            <button @click="search">Suche</button>
+            <button @click="prev">Prev</button>
+            <button @click="next">Next</button>
+          </div>
         </div>
+        <div id="rotation" class="rotation">
+          <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
+          <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
+        </div>
+
       </div>
->>>>>>> textSearching
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
@@ -152,30 +152,10 @@ export default {
 <style scoped>
 @import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
 
-<<<<<<< HEAD
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-  margin: 4px;
-  position: relative;
-  text-align: center;
-  background-color: grey;
-}
-
-.rotation{
-  justify-content: center;
-  background-color: #2c3e50;
-}
-
-.rotate-left{
-  margin-right: 20px;
-}
-
-=======
 button {
   margin: 0;
 }
+
 .container {
   padding: 30px;
   position: relative;
@@ -199,6 +179,7 @@ button {
   display: flex;
   align-items: center;
 }
+
 .search {
   position: relative;
   display: flex;
@@ -219,12 +200,35 @@ button {
   border-radius: 5px;
   background-color: grey;
 }
->>>>>>> textSearching
+
+.rotation{
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.rotate-left{
+  margin-right: 20px;
+}
+
+.rotate-right {
+  margin: 0;
+  position: relative;
+
+}
+
 .viewerContainer {
   overflow: auto;
   position: absolute;
   width: 90%;
   top: 50px;
+  height: 100%;
+}
+</style>
+
+.viewerContainer {
+  overflow: auto;
+  position: absolute;
+  width: 100%;
   height: 100%;
 }
 </style>
