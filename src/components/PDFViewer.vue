@@ -6,9 +6,9 @@
         <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
       </div>
       <div id="zoom" class="zoom">
-        <button @click="changeZoom(-25)" class="zoom-out">-</button>
+        <button @click="changeZoom(getZoomValue(-1))" class="zoom-out">-</button>
         <input v-model.number="currentZoom" @change="changeZoom(0)" type="number" for="zoom-factor" placeholder="100%"/>
-        <button @click="changeZoom(25)" class="zoom-in">+</button>
+        <button @click="changeZoom(getZoomValue(1))" class="zoom-in">+</button>
       </div>
     </div>
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
@@ -58,8 +58,23 @@ export default {
       this.pdfViewer.pagesRotation = this.currentRotation;
     },
     changeZoom(value) {
-      this.currentZoom += value;
+      const tempZoomValue = this.currentZoom + value;
+      if (tempZoomValue > 400) {
+        this.currentZoom = 400;
+      } else if (tempZoomValue < 10) {
+        this.currentZoom = 10;
+      } else {
+        this.currentZoom = tempZoomValue;
+      }
       this.pdfViewer.currentScaleValue = this.currentZoom / 100;
+    },
+    getZoomValue(key){
+      if (this.currentZoom < 60 && key < 0){
+        return -10;
+      } else if (this.currentZoom < 50){
+        return 10;
+      }
+      return 25 * key;
     },
     async loadDocument() {
       try {
@@ -99,7 +114,7 @@ export default {
       pdfLinkService.setViewer(this.pdfViewer);
       pdfScriptingManager.setViewer(this.pdfViewer);
       eventBus.on("pagesinit", () => {
-        this.pdfViewer.currentScaleValue = this.currentZoom/100;
+        this.pdfViewer.currentScaleValue = this.currentZoom / 100;
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
