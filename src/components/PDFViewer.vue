@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="toolbar">
+      <div id="rotation" class="rotation">
+        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
+        <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
+      </div>
+      <div id="zoom" class="zoom">
+        <button @click="changeZoom(getZoomValue(-1))" class="zoom-out">-</button>
+        <input v-model.number="currentZoom" @change="changeZoom(0)" type="number" for="zoom-factor" placeholder="100%"/>
+        <button @click="changeZoom(getZoomValue(1))" class="zoom-in">+</button>
+      </div>
     <div class="container">
       <div class = "toolbar">
         <div class="search">
@@ -41,6 +51,7 @@ export default {
   },
   data() {
     return {
+      currentZoom: 100,
       currentRotation: 0,
       document: null,
       pdfViewer: null,
@@ -56,13 +67,32 @@ export default {
     rotation(degree) {
       this.currentRotation += degree;
       const FULL_ROTATION = 360;
-      if (this.currentRotation >= FULL_ROTATION){
+      if (this.currentRotation >= FULL_ROTATION) {
         this.currentRotation -= FULL_ROTATION;
       }
-      if (this.currentRotation < 0){
+      if (this.currentRotation < 0) {
         this.currentRotation += FULL_ROTATION;
       }
       this.pdfViewer.pagesRotation = this.currentRotation;
+    },
+    changeZoom(value) {
+      const tempZoomValue = this.currentZoom + value;
+      if (tempZoomValue > 400) {
+        this.currentZoom = 400;
+      } else if (tempZoomValue < 10) {
+        this.currentZoom = 10;
+      } else {
+        this.currentZoom = tempZoomValue;
+      }
+      this.pdfViewer.currentScaleValue = this.currentZoom / 100;
+    },
+    getZoomValue(key){
+      if (this.currentZoom < 60 && key < 0){
+        return -10;
+      } else if (this.currentZoom < 50){
+        return 10;
+      }
+      return 25 * key;
     },
     async loadDocument() {
       try {
@@ -102,7 +132,7 @@ export default {
       pdfLinkService.setViewer(this.pdfViewer);
       pdfScriptingManager.setViewer(this.pdfViewer);
       eventBus.on("pagesinit", () => {
-        this.pdfViewer.currentScaleValue = "page-fit";
+        this.pdfViewer.currentScaleValue = this.currentZoom / 100;
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
@@ -181,6 +211,9 @@ button {
 }
 
 .search {
+  justify-content: center;
+  align-content: center;
+  margin: 4px;
   position: relative;
   display: flex;
   align-items: center;
@@ -199,14 +232,23 @@ button {
 
   border-radius: 5px;
   background-color: grey;
+  background-color: #2c3e50;
+  gap: 1.2rem;
 }
 
-.rotation{
+.rotation {
   justify-content: center;
   gap: 1.2rem;
 }
 
-.rotate-left{
+.zoom {
+  display: flex;
+  gap: 1.2rem;
+  align-content: center;
+  gap: 1.2rem;
+}
+
+.rotate-left {
   margin-right: 20px;
 }
 
