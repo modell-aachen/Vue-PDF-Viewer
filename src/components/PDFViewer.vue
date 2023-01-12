@@ -224,11 +224,3 @@ button {
   height: 100%;
 }
 </style>
-
-.viewerContainer {
-  overflow: auto;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-</style>
