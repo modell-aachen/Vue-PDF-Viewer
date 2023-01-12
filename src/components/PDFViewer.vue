@@ -1,36 +1,35 @@
 <template>
-  <div>
+
+  <div class="container">
     <div class="toolbar">
-      <div id="rotation" class="rotation">
-        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
-        <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
-      </div>
+
+
       <div id="zoom" class="zoom">
         <button @click="changeZoom(getZoomValue(-1))" class="zoom-out">-</button>
         <input v-model.number="currentZoom" @change="changeZoom(0)" type="number" for="zoom-factor" placeholder="100%"/>
         <button @click="changeZoom(getZoomValue(1))" class="zoom-in">+</button>
       </div>
-    <div class="container">
-      <div class = "toolbar">
-        <div class="search">
-          <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
-          <div v-if="isOpenSearchbar" class="searchBar">
-            <input v-model="searchWord" type="text" placeholder="Suche..." />
-            <button @click="search">Suche</button>
-            <button @click="prev">Prev</button>
-            <button @click="next">Next</button>
-          </div>
-        </div>
-        <div id="rotation" class="rotation">
-          <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
-          <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
-        </div>
 
+      <div id="rotation" class="rotation">
+        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
+        <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
+      </div>
+
+      <div class="search">
+        <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
+        <div v-if="isOpenSearchbar" class="searchBar">
+          <input v-model="searchWord" type="text" placeholder="Suche..."/>
+          <button @click="search">Suche</button>
+          <button @click="prev">Prev</button>
+          <button @click="next">Next</button>
+        </div>
       </div>
     </div>
+
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
     </div>
+
   </div>
 </template>
 
@@ -86,10 +85,10 @@ export default {
       }
       this.pdfViewer.currentScaleValue = this.currentZoom / 100;
     },
-    getZoomValue(key){
-      if (this.currentZoom < 60 && key < 0){
+    getZoomValue(key) {
+      if (this.currentZoom < 60 && key < 0) {
         return -10;
-      } else if (this.currentZoom < 50){
+      } else if (this.currentZoom < 50) {
         return 10;
       }
       return 25 * key;
@@ -140,9 +139,9 @@ export default {
       this.eventBus.on("resize", () => {
         const currentScaleValue = this.pdfViewer.currentScaleValue;
         if (
-          currentScaleValue === "auto" ||
-          currentScaleValue === "page-fit" ||
-          currentScaleValue === "page-width"
+            currentScaleValue === "auto" ||
+            currentScaleValue === "page-fit" ||
+            currentScaleValue === "page-width"
         ) {
           // Note: the scale is constant for 'page-actual'.
           this.pdfViewer.currentScaleValue = currentScaleValue;
@@ -150,7 +149,7 @@ export default {
         this.pdfViewer.update();
       });
       window.addEventListener("resize", () => {
-        this.eventBus.dispatch("resize", { source: window });
+        this.eventBus.dispatch("resize", {source: window});
       });
     },
     search() {
