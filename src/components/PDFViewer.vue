@@ -30,12 +30,33 @@
             </button>
           </div>
         </div>
+        <div id="jump_to_page" class="jump_to_page">
+          <button
+            @click="changePage(-1)"
+            class="zoom-out zoom-button"
+          >
+            <img src="../assets/icons/line-angle-left-icon.svg" class="zoom-icon" />
+          </button>
+          <input
+              v-model.number="currentPage"
+              @change="jump_to_page()"
+              for="new-page"
+              placeholder="Seite..."
+              class="page-input"
+            />
+          <button
+            @click="changePage(1)"
+            class="zoom-in zoom-button"
+          >
+            <img src="../assets/icons/line-angle-right-icon.svg" class="zoom-icon" />
+          </button>
+        </div>
         <div id="zoom" class="zoom">
           <button
             @click="changeZoom(getZoomValue(-1))"
             class="zoom-out zoom-button"
           >
-            <img src="../assets/icons/minus.svg" class="zoom-icon" />
+            <img src="../assets/icons/zoom-out-line-icon.svg" class="zoom-icon" />
           </button>
           <input
             v-model.number="currentZoom"
@@ -48,7 +69,7 @@
             @click="changeZoom(getZoomValue(1))"
             class="zoom-in zoom-button"
           >
-            <img src="../assets/icons/plus.svg" class="zoom-icon" />
+            <img src="../assets/icons/zoom-in-line-icon.svg" class="zoom-icon" />
           </button>
         </div>
         <div id="rotation" class="rotation">
@@ -91,6 +112,7 @@ export default {
       pdfViewer: null,
       eventBus: null,
       isOpenSearchbar: false,
+      currentPage: 1,
     };
   },
   async mounted() {
@@ -127,6 +149,17 @@ export default {
         return 10;
       }
       return 25 * key;
+    },
+    jump_to_page() {
+      if (this.currentPage < 1) { this.currentPage = 1; }
+      if (this.currentPage > this.document.numPages) { this.currentPage = this.document.numPages; }
+      this.pdfViewer.currentPageNumber= this.currentPage;
+    },
+    changePage(number) {
+      this.currentPage += number;
+      if (this.currentPage < 1) { this.currentPage = 1; }
+      if (this.currentPage > this.document.numPages) { this.currentPage = this.document.numPages; }
+      this.pdfViewer.currentPageNumber= this.currentPage;
     },
     async loadDocument() {
       try {
@@ -252,7 +285,7 @@ button {
 .grid-container {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   align-items: center;
   justify-items: center;
 }
@@ -315,6 +348,22 @@ button {
 }
 
 .zoom-input {
+  border-radius: 4px;
+  width: 40px;
+  padding: 4px;
+  text-align: center;
+  box-shadow: none;
+  border: none;
+}
+
+.jump_to_page {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  align-self: stretch;
+}
+
+.page-input {
   border-radius: 4px;
   width: 40px;
   padding: 4px;
