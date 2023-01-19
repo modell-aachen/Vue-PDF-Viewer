@@ -1,27 +1,64 @@
 <template>
-
   <div class="container">
     <div class="toolbar">
-
-
-      <div id="zoom" class="zoom">
-        <button @click="changeZoom(getZoomValue(-1))" class="zoom-out">-</button>
-        <input v-model.number="currentZoom" @change="changeZoom(0)" type="number" for="zoom-factor" placeholder="100%"/>
-        <button @click="changeZoom(getZoomValue(1))" class="zoom-in">+</button>
-      </div>
-
-      <div id="rotation" class="rotation">
-        <button @click=rotation(-90) class="rotate-left"><img src="../assets/icons/rotationLeft.svg"></button>
-        <button @click=rotation(90) class="rotate-right"><img src="../assets/icons/rotationRight.svg"></button>
-      </div>
-
-      <div class="search">
-        <button @click="isOpenSearchbar = !isOpenSearchbar">Search</button>
-        <div v-if="isOpenSearchbar" class="searchBar">
-          <input v-model="searchWord" type="text" placeholder="Suche..."/>
-          <button @click="search">Suche</button>
-          <button @click="prev">Prev</button>
-          <button @click="next">Next</button>
+      <div class="grid-container">
+        <div class="search">
+          <button @click="isOpenSearchbar = !isOpenSearchbar">
+            <img src="../assets/icons/search.svg" class="search-icon" />
+          </button>
+          <div v-if="isOpenSearchbar" class="search-bar">
+            <input
+              v-model="searchWord"
+              type="text"
+              placeholder="Suche..."
+              class="search-input"
+            />
+            <button @click="search" class="button-search">
+              <img src="../assets/icons/search.svg" class="search-icon" />
+            </button>
+            <button @click="prev" class="button-search">
+              <img
+                src="../assets/icons/double-arrow-left-icon.svg"
+                class="back-icon"
+              />
+            </button>
+            <button @click="next" class="button-search">
+              <img
+                src="../assets/icons/double-arrow-right-icon.svg"
+                class="next-icon"
+              />
+            </button>
+          </div>
+        </div>
+        <div id="zoom" class="zoom">
+          <button @click="rotation(-90)" class="rotate-button">
+            <img src="../assets/icons/rotationLeft.svg" class="rotation-icon" />
+          </button>
+          <button
+            @click="changeZoom(getZoomValue(-1))"
+            class="zoom-out zoom-button"
+          >
+            <img src="../assets/icons/minus.svg" class="zoom-icon" />
+          </button>
+          <input
+            v-model.number="currentZoom"
+            @change="changeZoom(0)"
+            for="zoom-factor"
+            placeholder="100%"
+            class="zoom-input"
+          />
+          <button
+            @click="changeZoom(getZoomValue(1))"
+            class="zoom-in zoom-button"
+          >
+            <img src="../assets/icons/plus.svg" class="zoom-icon" />
+          </button>
+          <button @click="rotation(90)" class="rotate-button">
+            <img
+              src="../assets/icons/rotationRight.svg"
+              class="rotation-icon"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -29,7 +66,6 @@
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
     </div>
-
   </div>
 </template>
 
@@ -139,9 +175,9 @@ export default {
       this.eventBus.on("resize", () => {
         const currentScaleValue = this.pdfViewer.currentScaleValue;
         if (
-            currentScaleValue === "auto" ||
-            currentScaleValue === "page-fit" ||
-            currentScaleValue === "page-width"
+          currentScaleValue === "auto" ||
+          currentScaleValue === "page-fit" ||
+          currentScaleValue === "page-width"
         ) {
           // Note: the scale is constant for 'page-actual'.
           this.pdfViewer.currentScaleValue = currentScaleValue;
@@ -149,7 +185,7 @@ export default {
         this.pdfViewer.update();
       });
       window.addEventListener("resize", () => {
-        this.eventBus.dispatch("resize", {source: window});
+        this.eventBus.dispatch("resize", { source: window });
       });
     },
     search() {
@@ -182,7 +218,9 @@ export default {
 @import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
 
 button {
-  margin: 0;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .container {
@@ -197,66 +235,120 @@ button {
   position: sticky;
   top: 0;
   left: 0;
-  padding: 5px;
-  border-radius: 2px;
-  background: rgb(191, 190, 190);
-  border-width: 2px;
-  border-color: gray;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+
   width: 100%;
-  height: fit-content;
+  height: 30px;
   z-index: 10000;
+  border-radius: 7px;
+  background: rgb(0, 55, 99);
+
   display: flex;
   align-items: center;
+}
+
+.button-search {
+  display: flex;
+  align-items: center;
+}
+
+.grid-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: center;
 }
 
 .search {
-  justify-content: center;
-  align-content: center;
-  margin: 4px;
-  position: relative;
-  display: flex;
-  align-items: center;
+  justify-self: start;
 }
 
-.searchBar {
+.search-icon {
+  height: 100%;
+  width: 100%;
+}
+
+.search-bar {
   z-index: 10000;
   position: absolute;
-  top: 2rem;
+  top: 35px;
   left: 0;
-  padding: 6px;
+  padding: 5px;
+  gap: 0.7rem;
 
   display: flex;
-  gap: 0.5rem;
   align-items: center;
 
   border-radius: 5px;
-  background-color: grey;
-  background-color: #2c3e50;
-  gap: 1.2rem;
+  background-color: #51c1e0;
 }
 
-.rotation {
-  justify-content: center;
-  gap: 1.2rem;
+.search-input {
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: none;
+  border: none;
 }
 
+.back-icon {
+  height: 15px;
+  width: 15px;
+}
+
+.next-icon {
+  height: 15px;
+  width: 15px;
+}
 .zoom {
   display: flex;
-  gap: 1.2rem;
+  align-items: center;
+  gap: 1rem;
+  align-self: stretch;
+}
+
+.zoom-button {
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.zoom-icon {
+  height: 100%;
+  width: 100%;
+}
+
+.rotate-button {
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.rotation-icon {
+  height: 100%;
+  width: 100%;
+}
+
+.zoom-input {
+  border-radius: 4px;
+  width: 40px;
+  padding: 4px;
+  text-align: center;
+  box-shadow: none;
+  border: none;
+}
+
+.search {
+  justify-content: space-between;
   align-content: center;
-  gap: 1.2rem;
-}
-
-.rotate-left {
-  margin-right: 20px;
-}
-
-.rotate-right {
-  margin: 0;
   position: relative;
-
+  display: flex;
+  align-items: center;
 }
-
 .viewerContainer {
   overflow: auto;
   position: absolute;
