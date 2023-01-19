@@ -13,16 +13,16 @@
               placeholder="Suche..."
               class="search-input"
             />
-            <button @click="search">
+            <button @click="search" class="button-search">
               <img src="../assets/icons/search.svg" class="search-icon" />
             </button>
-            <button @click="prev">
+            <button @click="prev" class="button-search">
               <img
                 src="../assets/icons/double-arrow-left-icon.svg"
                 class="back-icon"
               />
             </button>
-            <button @click="next">
+            <button @click="next" class="button-search">
               <img
                 src="../assets/icons/double-arrow-right-icon.svg"
                 class="next-icon"
@@ -31,6 +31,9 @@
           </div>
         </div>
         <div id="zoom" class="zoom">
+          <button @click="rotation(-90)" class="rotate-button">
+            <img src="../assets/icons/rotationLeft.svg" class="rotation-icon" />
+          </button>
           <button
             @click="changeZoom(getZoomValue(-1))"
             class="zoom-out zoom-button"
@@ -50,13 +53,11 @@
           >
             <img src="../assets/icons/plus.svg" class="zoom-icon" />
           </button>
-        </div>
-        <div id="rotation" class="rotation">
-          <button @click="rotation(-90)" class="rotate-left">
-            <img src="../assets/icons/rotationLeft.svg" />
-          </button>
-          <button @click="rotation(90)" class="rotate-right">
-            <img src="../assets/icons/rotationRight.svg" />
+          <button @click="rotation(90)" class="rotate-button">
+            <img
+              src="../assets/icons/rotationRight.svg"
+              class="rotation-icon"
+            />
           </button>
         </div>
       </div>
@@ -219,6 +220,7 @@ export default {
 button {
   background: none;
   border: none;
+  padding: 0;
 }
 
 .container {
@@ -234,17 +236,22 @@ button {
   top: 0;
   left: 0;
 
-  padding-top: 3px;
-  padding-bottom: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 10px;
   padding-right: 10px;
 
   width: 100%;
-  height: fit-content;
+  height: 30px;
   z-index: 10000;
   border-radius: 7px;
   background: rgb(0, 55, 99);
 
+  display: flex;
+  align-items: center;
+}
+
+.button-search {
   display: flex;
   align-items: center;
 }
@@ -262,16 +269,17 @@ button {
 }
 
 .search-icon {
-  height: 15px;
-  width: 15px;
+  height: 100%;
+  width: 100%;
 }
 
 .search-bar {
   z-index: 10000;
   position: absolute;
-  top: 160%;
+  top: 35px;
   left: 0;
-  padding: 6px;
+  padding: 5px;
+  gap: 0.7rem;
 
   display: flex;
   align-items: center;
@@ -310,8 +318,19 @@ button {
 }
 
 .zoom-icon {
-  height: 15px;
-  width: 15px;
+  height: 100%;
+  width: 100%;
+}
+
+.rotate-button {
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.rotation-icon {
+  height: 100%;
+  width: 100%;
 }
 
 .zoom-input {
@@ -330,21 +349,6 @@ button {
   display: flex;
   align-items: center;
 }
-
-.rotation {
-  justify-content: center;
-  gap: 1.2rem;
-}
-
-.rotate-left {
-  margin-right: 20px;
-}
-
-.rotate-right {
-  margin: 0;
-  position: relative;
-}
-
 .viewerContainer {
   overflow: auto;
   position: absolute;
