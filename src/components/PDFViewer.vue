@@ -158,75 +158,75 @@ export default {
         console.warn("Failed to load document");
       }
     },
-// Renders a PDF document in a container
-renderPDF() {
-  // Get a reference to the viewer container
-  const container = this.$refs.viewerContainer;
-  // Create an event bus for PDF.js
-  const eventBus = new pdfjsViewer.EventBus();
-  // Create a PDF link service for the viewer
-  const pdfLinkService = new pdfjsViewer.PDFLinkService({
-    eventBus,
-  });
+    // Renders a PDF document in a container
+    renderPDF() {
+      // Get a reference to the viewer container
+      const container = this.$refs.viewerContainer;
+      // Create an event bus for PDF.js
+      const eventBus = new pdfjsViewer.EventBus();
+      // Create a PDF link service for the viewer
+      const pdfLinkService = new pdfjsViewer.PDFLinkService({
+        eventBus,
+      });
 
-  // (Optionally) enable find controller
-  const pdfFindController = new pdfjsViewer.PDFFindController({
-    eventBus,
-    linkService: pdfLinkService,
-  });
+      // (Optionally) enable find controller
+      const pdfFindController = new pdfjsViewer.PDFFindController({
+        eventBus,
+        linkService: pdfLinkService,
+      });
 
-  // (Optionally) enable scripting support
-  const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
-    eventBus,
-    sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
-  });
+      // (Optionally) enable scripting support
+      const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
+        eventBus,
+        sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
+      });
 
-  // Create a PDF viewer with the required components
-  this.pdfViewer = new pdfjsViewer.PDFViewer({
-    container,
-    eventBus,
-    linkService: pdfLinkService,
-    findController: pdfFindController,
-    scriptingManager: pdfScriptingManager,
-  });
+      // Create a PDF viewer with the required components
+      this.pdfViewer = new pdfjsViewer.PDFViewer({
+        container,
+        eventBus,
+        linkService: pdfLinkService,
+        findController: pdfFindController,
+        scriptingManager: pdfScriptingManager,
+      });
 
-  // Set the viewer for the link service
-  pdfLinkService.setViewer(this.pdfViewer);
-  // Set the viewer for the scripting manager
-  pdfScriptingManager.setViewer(this.pdfViewer);
+      // Set the viewer for the link service
+      pdfLinkService.setViewer(this.pdfViewer);
+      // Set the viewer for the scripting manager
+      pdfScriptingManager.setViewer(this.pdfViewer);
 
-  // Set the current zoom level of the viewer on pagesinit event
-  eventBus.on("pagesinit", () => {
-    this.pdfViewer.currentScaleValue = this.currentZoom / 100;
-  });
+      // Set the current zoom level of the viewer on pagesinit event
+      eventBus.on("pagesinit", () => {
+        this.pdfViewer.currentScaleValue = this.currentZoom / 100;
+      });
 
-  // Set the document to be viewed
-  this.pdfViewer.setDocument(this.document);
-  // Set the document for the link service
-  pdfLinkService.setDocument(this.document, null);
+      // Set the document to be viewed
+      this.pdfViewer.setDocument(this.document);
+      // Set the document for the link service
+      pdfLinkService.setDocument(this.document, null);
 
-  // Keep a reference to the event bus
-  this.eventBus = eventBus;
+      // Keep a reference to the event bus
+      this.eventBus = eventBus;
 
-  // Listen for the resize event and update the viewer
-  this.eventBus.on("resize", () => {
-    const currentScaleValue = this.pdfViewer.currentScaleValue;
-    if (
-      currentScaleValue === "auto" ||
-      currentScaleValue === "page-fit" ||
-      currentScaleValue === "page-width"
-    ) {
-      // Note: the scale is constant for 'page-actual'.
-      this.pdfViewer.currentScaleValue = currentScaleValue;
-    }
-    this.pdfViewer.update();
-  });
+      // Listen for the resize event and update the viewer
+      this.eventBus.on("resize", () => {
+        const currentScaleValue = this.pdfViewer.currentScaleValue;
+        if (
+          currentScaleValue === "auto" ||
+          currentScaleValue === "page-fit" ||
+          currentScaleValue === "page-width"
+        ) {
+          // Note: the scale is constant for 'page-actual'.
+          this.pdfViewer.currentScaleValue = currentScaleValue;
+        }
+        this.pdfViewer.update();
+      });
 
-  // Listen for the window resize event and dispatch a resize event on the event bus
-  window.addEventListener("resize", () => {
-    this.eventBus.dispatch("resize", { source: window });
-  });
-},
+      // Listen for the window resize event and dispatch a resize event on the event bus
+      window.addEventListener("resize", () => {
+        this.eventBus.dispatch("resize", { source: window });
+      });
+    },
     next() {
       this.eventBus.dispatch("find", {
         type: "again",
