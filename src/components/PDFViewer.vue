@@ -9,8 +9,11 @@
         <div class="search">
           <!-- Button to toggle the visibility of the search bar -->
           <button @click="isOpenSearchbar = !isOpenSearchbar">
-            <!-- Icon for the search button -->
-            <img src="../assets/icons/search.svg" class="search-icon" />
+            <font-awesome-icon
+              icon="fa-solid fa-magnifying-glass"
+              size="xl"
+              style="color: white"
+            />
           </button>
           <!-- Search bar that is visible only if `isOpenSearchbar` is true -->
           <div v-if="isOpenSearchbar" class="search-bar">
@@ -23,34 +26,45 @@
             />
             <!-- Button to start the search -->
             <button @click="search" class="button-search">
-              <img src="../assets/icons/search.svg" class="search-icon" />
-            </button>
-            <!-- Button to go to the previous search result -->
-            <button @click="prev" class="button-search">
-              <img
-                src="../assets/icons/double-arrow-left-icon.svg"
-                class="back-icon"
+              <font-awesome-icon
+                icon="fa-solid fa-magnifying-glass"
+                size="xl"
+                style="color: white"
               />
             </button>
-            <!-- Button to go to the next search result -->
-            <button @click="next" class="button-search">
-              <img
-                src="../assets/icons/double-arrow-right-icon.svg"
-                class="next-icon"
+            <button @click="prevSearch" class="button-search">
+              <font-awesome-icon
+                icon="fa-solid fa-angles-left"
+                size="xl"
+                style="color: white"
+              />
+            </button>
+            <button @click="nextSearch" class="button-search">
+              <font-awesome-icon
+                icon="fa-solid fa-angles-right"
+                size="xl"
+                style="color: white"
               />
             </button>
           </div>
         </div>
-        <!-- Container for the zoom functionality -->
-        <div id="zoom" class="zoom">
+        <div class="zoom-rotate">
           <button @click="rotation(-90)" class="rotate-button">
-            <img src="../assets/icons/rotationLeft.svg" class="rotation-icon" />
+            <font-awesome-icon
+              icon="fa-solid fa-rotate-left"
+              size="xl"
+              style="color: white"
+            />
           </button>
           <button
             @click="changeZoom(getZoomValue(-1))"
             class="zoom-out zoom-button"
           >
-            <img src="../assets/icons/minus.svg" class="zoom-icon" />
+            <font-awesome-icon
+              icon="fa-solid fa-magnifying-glass-minus"
+              size="xl"
+              style="color: white"
+            />
           </button>
           <input
             v-model.number="currentZoom"
@@ -63,12 +77,17 @@
             @click="changeZoom(getZoomValue(1))"
             class="zoom-in zoom-button"
           >
-            <img src="../assets/icons/plus.svg" class="zoom-icon" />
+            <font-awesome-icon
+              icon="fa-solid fa-magnifying-glass-plus"
+              size="xl"
+              style="color: white"
+            />
           </button>
           <button @click="rotation(90)" class="rotate-button">
-            <img
-              src="../assets/icons/rotationRight.svg"
-              class="rotation-icon"
+            <font-awesome-icon
+              icon="fa-solid fa-rotate-right"
+              size="xl"
+              style="color: white"
             />
           </button>
         </div>
@@ -105,6 +124,7 @@ export default {
       pdfViewer: null,
       eventBus: null,
       isOpenSearchbar: false,
+      searchWord: "",
     };
   },
   async mounted() {
@@ -227,14 +247,21 @@ export default {
         this.eventBus.dispatch("resize", { source: window });
       });
     },
-    next() {
+    search() {
+      this.eventBus.dispatch("find", {
+        type: "",
+        query: this.searchWord,
+        highlightAll: true,
+      });
+    },
+    nextSearch() {
       this.eventBus.dispatch("find", {
         type: "again",
         query: this.searchWord,
         highlightAll: true,
       });
     },
-    prev() {
+    prevSearch() {
       this.eventBus.dispatch("find", {
         type: "again",
         query: this.searchWord,
@@ -261,6 +288,8 @@ button {
   height: 100%;
   display: grid;
   justify-items: center;
+  z-index: 100;
+  scrollbar-width: none;
 }
 
 .toolbar {
@@ -281,18 +310,13 @@ button {
 
   display: flex;
   align-items: center;
-}
-
-.button-search {
-  display: flex;
-  align-items: center;
+  justify-content: space-between;
 }
 
 .grid-container {
-  width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
   justify-items: center;
 }
 
@@ -300,11 +324,15 @@ button {
   justify-self: start;
 }
 
-.search-icon {
+.search-button {
   height: 100%;
   width: 100%;
 }
 
+.button-search {
+  display: flex;
+  align-items: center;
+}
 .search-bar {
   z-index: 10000;
   position: absolute;
@@ -336,11 +364,11 @@ button {
   height: 15px;
   width: 15px;
 }
-.zoom {
+.zoom-rotate {
   display: flex;
   align-items: center;
   gap: 1rem;
-  align-self: stretch;
+  align-self: center;
 }
 
 .zoom-button {
