@@ -1,5 +1,5 @@
 <template>
-  <div class="test">
+  <div class="outer-box">
     <PDFViewerVue :url="url" />
   </div>
 </template>
@@ -27,7 +27,7 @@ body {
   box-sizing: border-box;
 }
 
-.test {
+.outer-box {
   height: 100vh;
 }
 </style>

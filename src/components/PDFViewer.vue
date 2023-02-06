@@ -17,21 +17,21 @@
               placeholder="Suche..."
               class="search-input"
             />
-            <button @click="search" class="button-search">
+            <button @click="search">
               <font-awesome-icon
                 icon="fa-solid fa-magnifying-glass"
                 size="xl"
                 style="color: white"
               />
             </button>
-            <button @click="prevSearch" class="button-search">
+            <button @click="prevSearch">
               <font-awesome-icon
                 icon="fa-solid fa-angles-left"
                 size="xl"
                 style="color: white"
               />
             </button>
-            <button @click="nextSearch" class="button-search">
+            <button @click="nextSearch">
               <font-awesome-icon
                 icon="fa-solid fa-angles-right"
                 size="xl"
@@ -41,17 +41,14 @@
           </div>
         </div>
         <div class="zoom-rotate">
-          <button @click="rotation(-90)" class="rotate-button">
+          <button @click="rotation(-90)">
             <font-awesome-icon
               icon="fa-solid fa-rotate-left"
               size="xl"
               style="color: white"
             />
           </button>
-          <button
-            @click="changeZoom(getZoomValue(-1))"
-            class="zoom-out zoom-button"
-          >
+          <button @click="changeZoom(getZoomValue(-1))">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass-minus"
               size="xl"
@@ -65,19 +62,53 @@
             placeholder="100%"
             class="zoom-input"
           />
-          <button
-            @click="changeZoom(getZoomValue(1))"
-            class="zoom-in zoom-button"
-          >
+          <button @click="changeZoom(getZoomValue(1))">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass-plus"
               size="xl"
               style="color: white"
             />
           </button>
-          <button @click="rotation(90)" class="rotate-button">
+          <button @click="rotation(90)">
             <font-awesome-icon
               icon="fa-solid fa-rotate-right"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+          <button @click="resize('page-fit')">
+            <font-awesome-icon
+              icon="fa-solid fa-up-right-and-down-left-from-center"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+          <button @click="resize('page-width')">
+            <font-awesome-icon
+              icon="fa-solid fa-left-right"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+        </div>
+        <div class="pages">
+          <input
+            v-model.number="currentPage"
+            @change="jump_to_page()"
+            for="new-page"
+            placeholder="Seite..."
+            class="page-input"
+          />
+          <button @click="changePage(-1)">
+            <font-awesome-icon
+              icon="fa-solid fa-arrow-left"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+          <button @click="changePage(1)">
+            <font-awesome-icon
+              icon="fa-solid fa-arrow-right"
               size="xl"
               style="color: white"
             />
@@ -114,8 +145,10 @@ export default {
       document: null,
       pdfViewer: null,
       eventBus: null,
+      pdfFindController: null,
       isOpenSearchbar: false,
       searchWord: "",
+      currentPage: 1,
     };
   },
   async mounted() {
@@ -123,6 +156,10 @@ export default {
     this.renderPDF();
   },
   methods: {
+    resize(size) {
+      this.pdfViewer.currentScaleValue = size;
+      this.currentZoom = this.pdfViewer.currentScaleValue;
+    },
     rotation(degree) {
       this.currentRotation += degree;
       const FULL_ROTATION = 360;
@@ -135,6 +172,7 @@ export default {
       this.pdfViewer.pagesRotation = this.currentRotation;
     },
     changeZoom(value) {
+      if (isNaN(this.currentZoom)) this.currentZoom = 100;
       const tempZoomValue = this.currentZoom + value;
       if (tempZoomValue > 400) {
         this.currentZoom = 400;
@@ -171,7 +209,7 @@ export default {
       });
 
       // (Optionally) enable find controller.
-      const pdfFindController = new pdfjsViewer.PDFFindController({
+      this.pdfFindController = new pdfjsViewer.PDFFindController({
         eventBus,
         linkService: pdfLinkService,
       });
@@ -185,13 +223,14 @@ export default {
         container,
         eventBus,
         linkService: pdfLinkService,
-        findController: pdfFindController,
+        findController: this.pdfFindController,
         scriptingManager: pdfScriptingManager,
       });
       pdfLinkService.setViewer(this.pdfViewer);
       pdfScriptingManager.setViewer(this.pdfViewer);
       eventBus.on("pagesinit", () => {
-        this.pdfViewer.currentScaleValue = this.currentZoom / 100;
+        this.pdfViewer.currentScaleValue = "page-width";
+        this.currentZoom = "page-width";
       });
       this.pdfViewer.setDocument(this.document);
       pdfLinkService.setDocument(this.document, null);
@@ -211,6 +250,9 @@ export default {
       window.addEventListener("resize", () => {
         this.eventBus.dispatch("resize", { source: window });
       });
+      container.addEventListener("scroll", () => {
+        this.currentPage = this.pdfViewer.currentPageNumber;
+      });
     },
     search() {
       this.eventBus.dispatch("find", {
@@ -218,6 +260,7 @@ export default {
         query: this.searchWord,
         highlightAll: true,
       });
+      this.currentPage = this.pdfViewer.currentPageNumber;
     },
     nextSearch() {
       this.eventBus.dispatch("find", {
@@ -225,6 +268,8 @@ export default {
         query: this.searchWord,
         highlightAll: true,
       });
+      this.currentPage = this.pdfViewer.currentPageNumber;
+      console.log(this.pdfFindController);
     },
     prevSearch() {
       this.eventBus.dispatch("find", {
@@ -233,6 +278,26 @@ export default {
         highlightAll: true,
         findPrevious: true,
       });
+      this.currentPage = this.pdfViewer.currentPageNumber;
+    },
+    jump_to_page() {
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+      if (this.currentPage > this.document.numPages) {
+        this.currentPage = this.document.numPages;
+      }
+      this.pdfViewer.currentPageNumber = this.currentPage;
+    },
+    changePage(number) {
+      this.currentPage += number;
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+      if (this.currentPage > this.document.numPages) {
+        this.currentPage = this.document.numPages;
+      }
+      this.pdfViewer.currentPageNumber = this.currentPage;
     },
   },
 };
@@ -255,6 +320,7 @@ button {
   justify-items: center;
   z-index: 100;
   scrollbar-width: none;
+  box-sizing: border-box;
 }
 
 .toolbar {
@@ -287,17 +353,13 @@ button {
 
 .search {
   justify-self: start;
-}
-
-.search-button {
-  height: 100%;
-  width: 100%;
-}
-
-.button-search {
+  justify-content: space-between;
+  align-content: center;
+  position: relative;
   display: flex;
   align-items: center;
 }
+
 .search-bar {
   z-index: 10000;
   position: absolute;
@@ -310,7 +372,7 @@ button {
   align-items: center;
 
   border-radius: 5px;
-  background-color: #51c1e0;
+  background-color: #708090;
 }
 
 .search-input {
@@ -320,15 +382,6 @@ button {
   border: none;
 }
 
-.back-icon {
-  height: 15px;
-  width: 15px;
-}
-
-.next-icon {
-  height: 15px;
-  width: 15px;
-}
 .zoom-rotate {
   display: flex;
   align-items: center;
@@ -336,49 +389,37 @@ button {
   align-self: center;
 }
 
-.zoom-button {
-  box-shadow: none;
-  display: flex;
-  align-items: center;
-}
-
-.zoom-icon {
-  height: 100%;
-  width: 100%;
-}
-
-.rotate-button {
-  box-shadow: none;
-  display: flex;
-  align-items: center;
-}
-
-.rotation-icon {
-  height: 100%;
-  width: 100%;
-}
-
 .zoom-input {
   border-radius: 4px;
-  width: 40px;
+  width: 80px;
   padding: 4px;
   text-align: center;
   box-shadow: none;
   border: none;
 }
 
-.search {
-  justify-content: space-between;
-  align-content: center;
-  position: relative;
+.pages {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  justify-self: end;
+}
+
+.page-input {
+  border-radius: 4px;
+  width: 25px;
+  padding: 4px;
+  text-align: center;
+  box-shadow: none;
+  border: none;
 }
 .viewerContainer {
-  overflow: auto;
+  overflow-x: scroll;
+  overflow-y: scroll;
   position: absolute;
   width: 90%;
-  top: 50px;
-  height: 100%;
+  height: 90%;
+  top: 80px;
+  box-sizing: border-box;
 }
 </style>
