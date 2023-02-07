@@ -1,8 +1,13 @@
 <template>
+  <!-- Container for the whole toolbar and viewer -->
   <div class="container">
+    <!-- Container for the toolbar -->
     <div class="toolbar">
+      <!-- Grid container for organizing the elements in the toolbar -->
       <div class="grid-container">
+        <!-- Container for the search functionality -->
         <div class="search">
+          <!-- Button to toggle the visibility of the search bar -->
           <button @click="isOpenSearchbar = !isOpenSearchbar">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass"
@@ -10,7 +15,9 @@
               style="color: white"
             />
           </button>
+          <!-- Search bar that is visible only if `isOpenSearchbar` is true -->
           <div v-if="isOpenSearchbar" class="search-bar">
+            <!-- Input field for entering the search word -->
             <input
               v-model="searchWord"
               type="text"
@@ -117,6 +124,7 @@
       </div>
     </div>
 
+    <!-- Container to render the complete pdf file -->
     <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
       <div ref="viewer" id="viewer" class="pdfViewer"></div>
     </div>
@@ -189,6 +197,8 @@ export default {
       } else {
         this.currentZoom = tempZoomValue;
       }
+
+      // Updates the current scale value of the PDF viewer.
       this.pdfViewer.currentScaleValue = this.currentZoom / 100;
     },
     async loadDocument() {
@@ -201,9 +211,13 @@ export default {
         console.warn("Failed to load document");
       }
     },
+    // Renders a PDF document in a container
     renderPDF() {
+      // Get a reference to the viewer container
       const container = this.$refs.viewerContainer;
+      // Create an event bus for PDF.js
       const eventBus = new pdfjsViewer.EventBus();
+      // Create a PDF link service for the viewer
       const pdfLinkService = new pdfjsViewer.PDFLinkService({
         eventBus,
       });
@@ -214,11 +228,13 @@ export default {
         linkService: pdfLinkService,
       });
 
-      // (Optionally) enable scripting support.
+      // (Optionally) enable scripting support
       const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
         eventBus,
         sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
       });
+
+      // Create a PDF viewer with the required components
       this.pdfViewer = new pdfjsViewer.PDFViewer({
         container,
         eventBus,
@@ -226,15 +242,27 @@ export default {
         findController: this.pdfFindController,
         scriptingManager: pdfScriptingManager,
       });
+
+      // Set the viewer for the link service
       pdfLinkService.setViewer(this.pdfViewer);
+      // Set the viewer for the scripting manager
       pdfScriptingManager.setViewer(this.pdfViewer);
+
+      // Set the current zoom level of the viewer on pagesinit event
       eventBus.on("pagesinit", () => {
         this.pdfViewer.currentScaleValue = "page-width";
         this.currentZoom = "page-width";
       });
+
+      // Set the document to be viewed
       this.pdfViewer.setDocument(this.document);
+      // Set the document for the link service
       pdfLinkService.setDocument(this.document, null);
+
+      // Keep a reference to the event bus
       this.eventBus = eventBus;
+
+      // Listen for the resize event and update the viewer
       this.eventBus.on("resize", () => {
         const currentScaleValue = this.pdfViewer.currentScaleValue;
         if (
@@ -247,6 +275,8 @@ export default {
         }
         this.pdfViewer.update();
       });
+
+      // Listen for the window resize event and dispatch a resize event on the event bus
       window.addEventListener("resize", () => {
         this.eventBus.dispatch("resize", { source: window });
       });
