@@ -55,7 +55,7 @@
               style="color: white"
             />
           </button>
-          <button @click="changeZoom(getZoomValue(-1))">
+          <button @click="decreaseScale()">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass-minus"
               size="xl"
@@ -69,7 +69,7 @@
             placeholder="100%"
             class="zoom-input"
           />
-          <button @click="changeZoom(getZoomValue(1))">
+          <button @click="increaseScale()">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass-plus"
               size="xl"
@@ -179,14 +179,19 @@ export default {
       }
       this.pdfViewer.pagesRotation = this.currentRotation;
     },
-    // Changes the zoom level of the PDF document.
+    increaseScale() {
+      this.pdfViewer.increaseScale();
+      this.currentZoom = Math.floor(this.pdfViewer.currentScaleValue * 100);
+    },
+    decreaseScale() {
+      this.pdfViewer.decreaseScale();
+      this.currentZoom = Math.floor(this.pdfViewer.currentScaleValue * 100);
+    },
     changeZoom(value) {
       if (isNaN(this.currentZoom)) this.currentZoom = 100;
       const tempZoomValue = this.currentZoom + value;
-
-      // Checks if the zoom value is within the range of 10-400.
-      if (tempZoomValue > 400) {
-        this.currentZoom = 400;
+      if (tempZoomValue > 1000) {
+        this.currentZoom = 1000;
       } else if (tempZoomValue < 10) {
         this.currentZoom = 10;
       } else {
@@ -195,14 +200,6 @@ export default {
 
       // Updates the current scale value of the PDF viewer.
       this.pdfViewer.currentScaleValue = this.currentZoom / 100;
-    },
-    getZoomValue(key) {
-      if (this.currentZoom < 60 && key < 0) {
-        return -10;
-      } else if (this.currentZoom < 50) {
-        return 10;
-      }
-      return 25 * key;
     },
     async loadDocument() {
       try {
@@ -393,10 +390,6 @@ button {
   align-items: center;
 }
 
-.button-search {
-  display: flex;
-  align-items: center;
-}
 .search-bar {
   z-index: 10000;
   position: absolute;
