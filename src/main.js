@@ -15,13 +15,15 @@ import {
   faArrowLeft,
   faArrowRight,
   faLeftRight,
-  faUpRightAndDownLeftFromCenter
+  faUpRightAndDownLeftFromCenter,
+  faFile,
+  faScroll
 } from '@fortawesome/free-solid-svg-icons'
 import {
   FontAwesomeIcon
 } from '@fortawesome/vue-fontawesome'
 
-library.add(faMagnifyingGlass, faAnglesLeft, faAnglesRight, faRotateLeft, faRotateRight, faMagnifyingGlassMinus, faMagnifyingGlassPlus, faArrowLeft, faArrowRight, faLeftRight, faUpRightAndDownLeftFromCenter);
+library.add(faMagnifyingGlass, faAnglesLeft, faAnglesRight, faRotateLeft, faRotateRight, faMagnifyingGlassMinus, faMagnifyingGlassPlus, faArrowLeft, faArrowRight, faLeftRight, faUpRightAndDownLeftFromCenter, faFile, faScroll);
 
 Vue.config.productionTip = false
 

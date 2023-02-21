@@ -92,13 +92,6 @@
           </button>
         </div>
         <div class="pages">
-          <input
-            v-model.number="currentPage"
-            @change="jump_to_page()"
-            for="new-page"
-            placeholder="Seite..."
-            class="page-input"
-          />
           <button @click="changePage(-1)">
             <font-awesome-icon
               icon="fa-solid fa-arrow-left"
@@ -106,6 +99,13 @@
               style="color: white"
             />
           </button>
+          <input
+            v-model.number="currentPage"
+            @change="jump_to_page()"
+            for="new-page"
+            placeholder="Seite..."
+            class="page-input"
+          />
           <button @click="changePage(1)">
             <font-awesome-icon
               icon="fa-solid fa-arrow-right"
@@ -113,6 +113,22 @@
               style="color: white"
             />
           </button>
+          <div class="scroll-mode">
+            <button @click="changePageView">
+              <font-awesome-icon
+                v-if="isScrollMode"
+                icon="fa-solid fa-file"
+                size="xl"
+                style="color: white"
+              />
+              <font-awesome-icon
+                v-else
+                icon="fa-solid fa-scroll"
+                size="xl"
+                style="color: white"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -149,6 +165,7 @@ export default {
       isOpenSearchbar: false,
       searchWord: "",
       currentPage: 1,
+      isScrollMode: true,
     };
   },
   async mounted() {
@@ -156,6 +173,15 @@ export default {
     this.renderPDF();
   },
   methods: {
+    changePageView() {
+      if (this.isScrollMode) {
+        this.pdfViewer.scrollMode = 3;
+        this.isScrollMode = false;
+      } else {
+        this.pdfViewer.scrollMode = 0;
+        this.isScrollMode = true;
+      }
+    },
     resize(size) {
       this.pdfViewer.currentScaleValue = size;
       this.currentZoom = this.pdfViewer.currentScaleValue;
@@ -351,12 +377,18 @@ button {
   justify-items: center;
 }
 
+.left-actions {
+  display: flex;
+  gap: 15px;
+}
+
 .search {
   justify-self: start;
   justify-content: space-between;
   align-content: center;
   position: relative;
   display: flex;
+  gap: 15px;
   align-items: center;
 }
 
