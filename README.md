@@ -1,24 +1,15 @@
 # vuejs-pdf-viewer
 
-## Project setup
-```
-yarn install
-```
+## Description
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+This is a Vue component for displaying PDfs. The PDFs are rendered using pdf.js. The rendering includes an image and text layer. 
+In PDF Viewer you can zoom, search for words and rotate the pages. You can also switch between scroll and single page mode.
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Props
+ - url: passing the PDF URL
+ - toolbarColor: color of the main toolbar
+ - searchbarColor: color of the search bar
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Installation
+ - Download the code
+ - Run ```yarn install``` 
