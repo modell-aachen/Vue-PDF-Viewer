@@ -1,4 +1,4 @@
-# vuejs-pdf-viewer
+## Vue.js Full PDF Viewer
 
 ## Description
 

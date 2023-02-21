@@ -137,17 +137,89 @@
             </button>
           </div>
         </div>
+        <div class="pages">
+          <button @click="changePage(-1)">
+            <font-awesome-icon
+              icon="fa-solid fa-arrow-left"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+          <input
+            v-model.number="currentPage"
+            @change="jump_to_page()"
+            for="new-page"
+            placeholder="Seite..."
+            class="page-input"
+          />
+          <button @click="changePage(1)">
+            <font-awesome-icon
+              icon="fa-solid fa-arrow-right"
+              size="xl"
+              style="color: white"
+            />
+          </button>
+          <div class="scroll-mode">
+            <button @click="changePageView" class="page-mode">
+              <font-awesome-icon
+                v-if="isScrollMode"
+                icon="fa-solid fa-file"
+                size="xl"
+                style="color: white"
+              />
+              <font-awesome-icon
+                v-else
+                icon="fa-solid fa-scroll"
+                size="xl"
+                style="color: white"
+              />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Container to render the complete pdf file -->
-    <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
-      <div ref="viewer" id="viewer" class="pdfViewer"></div>
+    <div class="pdfContainer">
+      <div ref="viewerContainer" id="viewerContainer" class="viewerContainer">
+        <div ref="viewer" id="viewer" class="pdfViewer"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faMagnifyingGlass,
+  faAnglesLeft,
+  faAnglesRight,
+  faRotateLeft,
+  faRotateRight,
+  faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
+  faArrowLeft,
+  faArrowRight,
+  faLeftRight,
+  faUpRightAndDownLeftFromCenter,
+  faFile,
+  faScroll,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(
+  faMagnifyingGlass,
+  faAnglesLeft,
+  faAnglesRight,
+  faRotateLeft,
+  faRotateRight,
+  faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
+  faArrowLeft,
+  faArrowRight,
+  faLeftRight,
+  faUpRightAndDownLeftFromCenter,
+  faFile,
+  faScroll
+);
 import * as pdf from "pdfjs-dist/legacy/build/pdf.js";
 import PdfWorker from "pdfjs-dist/legacy/build/pdf.worker.js";
 import * as pdfjsViewer from "pdfjs-dist/legacy/web/pdf_viewer.js";
@@ -156,6 +228,9 @@ import SANDBOX_BUNDLE_SRC from "pdfjs-dist/legacy/build/pdf.sandbox.js";
 pdf.GlobalWorkerOptions.workerPort = new PdfWorker();
 
 export default {
+  components: {
+    FontAwesomeIcon,
+  },
   props: {
     url: {
       type: String,
@@ -382,7 +457,8 @@ button {
   padding: 30px;
   position: relative;
   height: 100%;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   justify-items: center;
   z-index: 100;
   scrollbar-width: none;
@@ -390,16 +466,11 @@ button {
 }
 
 .toolbar {
-  position: sticky;
-  top: 0;
-  left: 0;
-
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 10px;
   padding-right: 10px;
 
-  width: 100%;
   height: 30px;
   z-index: 10000;
   border-radius: 7px;
@@ -487,8 +558,14 @@ button {
   overflow-y: scroll;
   position: absolute;
   width: 90%;
-  height: 90%;
-  top: 80px;
+  height: 100%;
   box-sizing: border-box;
+}
+
+.pdfContainer {
+  display: flex;
+  position: relative;
+  height: 100%;
+  justify-content: center;
 }
 </style>

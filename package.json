@@ -1,11 +1,21 @@
 {
-  "name": "vuejs-pdf-viewer",
-  "version": "0.1.0",
-  "private": true,
+  "name": "vuejs-full-pdf-viewer",
+  "version": "0.1.35",
+  "private": false,
+  "main" : "./dist/v-pdfviewer.common.js",
+  "files": [
+    "dist/*",
+    "src/*",
+    "public/*",
+    "*.json",
+    "*.js"
+  ],
+
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build-package": "vue-cli-service build --target lib --name v-pdfviewer ./src/index.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
