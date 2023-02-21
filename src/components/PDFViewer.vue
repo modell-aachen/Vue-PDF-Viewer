@@ -114,7 +114,7 @@
             />
           </button>
           <div class="scroll-mode">
-            <button @click="changePageView">
+            <button @click="changePageView" class="page-mode">
               <font-awesome-icon
                 v-if="isScrollMode"
                 icon="fa-solid fa-file"
@@ -444,6 +444,10 @@ button {
   text-align: center;
   box-shadow: none;
   border: none;
+}
+
+.page-mode {
+  width: 40px;
 }
 .viewerContainer {
   overflow-x: scroll;
