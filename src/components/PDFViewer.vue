@@ -1,9 +1,7 @@
 <template>
   <!-- Container for the whole toolbar and viewer -->
   <div class="container">
-    <!-- Container for the toolbar -->
-    <div class="toolbar">
-      <!-- Grid container for organizing the elements in the toolbar -->
+    <div class="toolbar" :style="{ backgroundColor: toolbarColor }">
       <div class="grid-container">
         <!-- Container for the search functionality -->
         <div class="search">
@@ -15,9 +13,11 @@
               style="color: white"
             />
           </button>
-          <!-- Search bar that is visible only if `isOpenSearchbar` is true -->
-          <div v-if="isOpenSearchbar" class="search-bar">
-            <!-- Input field for entering the search word -->
+          <div
+            v-if="isOpenSearchbar"
+            class="search-bar"
+            :style="{ background: searchbarColor }"
+          >
             <input
               v-model="searchWord"
               type="text"
@@ -121,7 +121,7 @@
             />
           </button>
           <div class="scroll-mode">
-            <button @click="changePageView">
+            <button @click="changePageView" class="page-mode">
               <font-awesome-icon
                 v-if="isScrollMode"
                 icon="fa-solid fa-file"
@@ -160,6 +160,16 @@ export default {
     url: {
       type: String,
       required: true,
+    },
+    toolbarColor: {
+      type: String,
+      required: false,
+      default: "rgb(0, 55, 99)",
+    },
+    searchbarColor: {
+      type: String,
+      required: false,
+      default: "#708090",
     },
   },
   data() {
@@ -393,7 +403,6 @@ button {
   height: 30px;
   z-index: 10000;
   border-radius: 7px;
-  background: rgb(0, 55, 99);
 
   display: flex;
   align-items: center;
@@ -428,7 +437,6 @@ button {
   align-items: center;
 
   border-radius: 5px;
-  background-color: #708090;
 }
 
 .search-input {
@@ -469,6 +477,11 @@ button {
   box-shadow: none;
   border: none;
 }
+
+.page-mode {
+  width: 40px;
+}
+
 .viewerContainer {
   overflow-x: scroll;
   overflow-y: scroll;
