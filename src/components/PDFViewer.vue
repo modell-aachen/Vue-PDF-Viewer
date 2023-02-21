@@ -137,45 +137,6 @@
             </button>
           </div>
         </div>
-        <div class="pages">
-          <button @click="changePage(-1)">
-            <font-awesome-icon
-              icon="fa-solid fa-arrow-left"
-              size="xl"
-              style="color: white"
-            />
-          </button>
-          <input
-            v-model.number="currentPage"
-            @change="jump_to_page()"
-            for="new-page"
-            placeholder="Seite..."
-            class="page-input"
-          />
-          <button @click="changePage(1)">
-            <font-awesome-icon
-              icon="fa-solid fa-arrow-right"
-              size="xl"
-              style="color: white"
-            />
-          </button>
-          <div class="scroll-mode">
-            <button @click="changePageView" class="page-mode">
-              <font-awesome-icon
-                v-if="isScrollMode"
-                icon="fa-solid fa-file"
-                size="xl"
-                style="color: white"
-              />
-              <font-awesome-icon
-                v-else
-                icon="fa-solid fa-scroll"
-                size="xl"
-                style="color: white"
-              />
-            </button>
-          </div>
-        </div>
       </div>
     </div>
     <div class="pdfContainer">
