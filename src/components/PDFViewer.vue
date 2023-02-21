@@ -344,7 +344,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../../node_modules/pdfjs-dist/legacy/web/pdf_viewer.css";
+@import "../assets/css/pdf_viewer.css";
 
 button {
   background: none;
