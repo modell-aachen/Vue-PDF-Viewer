@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="toolbar">
+    <div class="toolbar" :style="{ backgroundColor: toolbarColor }">
       <div class="grid-container">
         <div class="search">
           <button @click="isOpenSearchbar = !isOpenSearchbar">
@@ -10,7 +10,11 @@
               style="color: white"
             />
           </button>
-          <div v-if="isOpenSearchbar" class="search-bar">
+          <div
+            v-if="isOpenSearchbar"
+            class="search-bar"
+            :style="{ background: searchbarColor }"
+          >
             <input
               v-model="searchWord"
               type="text"
@@ -152,6 +156,16 @@ export default {
     url: {
       type: String,
       required: true,
+    },
+    toolbarColor: {
+      type: String,
+      required: false,
+      default: "rgb(0, 55, 99)",
+    },
+    searchbarColor: {
+      type: String,
+      required: false,
+      default: "#708090",
     },
   },
   data() {
@@ -363,7 +377,6 @@ button {
   height: 30px;
   z-index: 10000;
   border-radius: 7px;
-  background: rgb(0, 55, 99);
 
   display: flex;
   align-items: center;
@@ -404,7 +417,6 @@ button {
   align-items: center;
 
   border-radius: 5px;
-  background-color: #708090;
 }
 
 .search-input {
